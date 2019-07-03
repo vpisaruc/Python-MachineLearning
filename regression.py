@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 from matplotlib import style
+import pickle
 
 style.use('ggplot')
 
@@ -43,7 +44,6 @@ X_lately = X[-forecast_out:]
 df.dropna(inplace=True)
 # our labels или значения которыу мы пытаемся предугадать
 y = np.array(df['label'])
-y = np.array(df['label'])
 
 # функция train_test_split разбивает наш масивв данных на 4 подмассива,
 # 2 из них для обучения нашей систему, 2 для тестов
@@ -51,9 +51,18 @@ y = np.array(df['label'])
 X_train,  X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 # определяем объект линейной регрессии
-clf = LinearRegression()
+# clf = LinearRegression()
 # тренируем нашу систему
-clf.fit(X_train, y_train)
+# clf.fit(X_train, y_train)
+# чтобы каждый раз не тренировать наш алгоритм, мы сохраним его с помощью pickle
+# with open('lenearregression.pickle', 'wb') as f:
+#     # сохранение
+#     pickle.dump(clf, f)
+
+# чтобы загрузить наш алгоритм
+pickle_in = open('lenearregression.pickle', 'rb')
+clf = pickle.load(pickle_in)
+
 # считаем насколько наша система хорошо предсказываает значения
 accuracy = clf.score(X_test, y_test)
 forecast_set = clf.predict(X_lately)

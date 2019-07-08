@@ -21,6 +21,19 @@ def best_fit_slope_and_intercept(xs, ys):
     b = mean(ys) - m * mean(xs)
     return m, b
 
+# найдем квадрат ошибки для нахождения коэффициента детерминации(аккуратности)
+# квадрат ошибки - это растояние от нашей линии регрессии до реального значения
+def squared_error(ys_orig, ys_line):
+    return sum((ys_line - ys_orig)**2)
+
+# вычисляем аккуратность нашей линии или коэффициент детерминации
+def coefficient_of_tetermination(ys_orig, ys_line):
+    y_mean_line = [mean(ys_orig) for y in ys_orig]
+    squared_error_regr = squared_error(ys_orig, ys_line)
+    squared_error_y_mean = squared_error(ys_orig, y_mean_line)
+    return 1 - (squared_error_regr/squared_error_y_mean)
+
+
 m, b = best_fit_slope_and_intercept(xs, ys)
 
 # находим y-ки нашей линии регрессии
@@ -29,6 +42,9 @@ regression_line = [(m * x) + b for x in xs]
 # предсказываем y по заданному x
 predict_x = 8
 predict_y = (m * predict_x) + b
+
+# наш коэффициент детерминации, узнаем насколько наша регрессия хороша на этих данных
+determ_coef = coefficient_of_tetermination(ys, regression_line)
 
 # выводим нашу линию регрессии
 plt.scatter(predict_x, predict_y, color='g')

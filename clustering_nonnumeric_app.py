@@ -4,13 +4,17 @@ import numpy as np
 from sklearn.cluster import KMeans
 import pandas as pd
 from sklearn import preprocessing
-from sklearn.model_selection import train_test_split
 style.use('ggplot')
 
 df = pd.read_excel(r'Datasets\titanic.xls')
 df.drop(['body', 'name'], 1, inplace=True)
 df.convert_objects(convert_numeric=True)
 df.fillna(0, inplace=True)
+
+
+"""Здесь я буду предсказывать выжил ли пассажир, находившийся на титанике или нет
+   по данным мне параметрам из датасетас titanic.xls"""
+
 
 # конвертируем не числовые данные в числовые
 def handle_non_numerical_data(df):
@@ -40,6 +44,23 @@ def handle_non_numerical_data(df):
     return df
 
 df = handle_non_numerical_data(df)
-print(df.head())
 
+# массив наших параметров
+X = np.array(df.drop(['survived'], 1).astype(float))
+X = preprocessing.scale(X)
+y = np.array(df['survived'])
+
+clf = KMeans(n_clusters=2)
+clf.fit(X)
+
+correct = 0
+
+for i in range(len(X)):
+    predict_me = np.array(X[i].astype(float))
+    predict_me = predict_me.reshape(-1, len(predict_me))
+    prediction = clf.predict(predict_me)
+    if prediction[0] == y[i]:
+        correct += 1
+
+print(correct/len(X))
 
